@@ -1,0 +1,32 @@
+<!-- rpc/templates/rpc/call_rpc_method.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON-RPC Вызов метода</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    {% load crispy_forms_tags %}
+</head>
+<body>
+    <div class="container">
+        <h1>JSON-RPC Вызов метода</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Вызвать метод</button>
+        </form>
+        {% if result %}
+            <h2>Результат:</h2>
+            <pre>{{ result|safe }}</pre>
+        {% endif %}
+        {% if error %}
+            <h2>Ошибка:</h2>
+            <pre>{{ error|safe }}</pre>
+            {% if response_text %}
+                <h3>Текст ответа:</h3>
+                <pre>{{ response_text|safe }}</pre>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
