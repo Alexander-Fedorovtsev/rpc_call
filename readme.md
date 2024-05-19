@@ -9,12 +9,12 @@
 
 ### Пример README файла
 
-```markdown
+
 # JSON-RPC Method Caller
 
 ## Описание проекта
 
-Этот проект представляет собой веб-приложение на Django, которое позволяет пользователям выполнять вызовы JSON-RPC 2.0 методов через простой пользовательский интерфейс. Приложение поддерживает аутентификацию с использованием клиентских сертификатов и ключей, а также использует библиотеку `httpx` для выполнения запросов.
+Этот проект представляет собой веб-приложение на Django, которое позволяет пользователям выполнять вызовы JSON-RPC 2.0 методов через простой пользовательский интерфейс. Приложение поддерживает аутентификацию с использованием клиентских сертификатов и ключей, а также использует библиотеку `requests` для выполнения запросов.
 
 ## Установка
 
@@ -110,7 +110,7 @@
 
 ## Использование
 
-1. Откройте ваш браузер и перейдите по адресу `http://localhost:8000/rpc/call/`.
+1. Откройте ваш браузер и перейдите по адресу `http://localhost:8000/api/call/`.
 2. Введите URL, метод JSON-RPC и параметры в соответствующие поля.
 3. Нажмите кнопку "Вызвать метод".
 4. Результат или ошибка будут отображены на странице.
@@ -130,67 +130,14 @@
 }
 ```
 
-Пример кода для вызова метода:
+Пример страницы для вызова метода:
+![img.png](img.png)
 
-```python
-import json
-import httpx
 
-class JsonRpcClient:
-    def __init__(self, endpoint, cert_text, key_text):
-        self.endpoint = endpoint
-        self.cert_text = cert_text
-        self.key_text = key_text
-
-    def _create_temp_files(self):
-        cert_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pem")
-        cert_file.write(self.cert_text.encode('utf-8'))
-        cert_file.close()
-
-        key_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pem")
-        key_file.write(self.key_text.encode('utf-8'))
-        key_file.close()
-
-        return cert_file.name, key_file.name
-
-    def call_method(self, method, params=None):
-        if params is None:
-            params = {}
-
-        payload = {
-            "jsonrpc": "2.0",
-            "method": method,
-            "params": params,
-            "id": 1
-        }
-
-        headers = {
-            'Content-Type': 'application/json',
-        }
-
-        cert_file, key_file = self._create_temp_files()
-        try:
-            response = httpx.post(
-                self.endpoint,
-                json=payload,
-                headers=headers,
-                cert=(cert_file, key_file),
-                verify=False
-            )
-            response.raise_for_status()
-            return response.json()
-        except httpx.HTTPStatusError as e:
-            return {"error": f"HTTPError: {e.response.status_code} - {e.response.reason_phrase}", "response_text": e.response.text}
-        except httpx.RequestError as e:
-            return {"error": f"RequestException: {str(e)}"}
-        finally:
-            os.remove(cert_file)
-            os.remove(key_file)
-```
 
 ## Лицензия
 
-Этот проект лицензируется в соответствии с условиями MIT License. Подробности см. в LICENSE файле.
+Этот проект лицензируется в соответствии с условиями MIT License.
 ```
 
 ### Примечание
